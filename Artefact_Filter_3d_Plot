@@ -1,0 +1,52 @@
+# --- 1. Install and Load Necessary Packages ---
+
+# ... (packages code remains the same) ...
+library(readr)
+library(plotly)
+
+# --- 2. Read the Data ---
+
+file_path <- "/Users/shamili/Documents/Dummy.csv" 
+data <- read_csv(file_path) 
+
+# --- 2.5 Data Filtering (UPDATED STEP: Artefact OR) ---
+
+# Filter the data to include 
+
+filtered_data <- subset(
+  data, 
+  Artefact %in% c("Pottery Shard", "Flint Tool") 
+)
+
+# Note: The logical AND operator '&' still requires all main conditions to be TRUE.
+# The %in% operator within the Artefact condition acts as an OR.
+
+
+# --- 3. Data Preparation for Grouping ---
+
+# The Group variable is now more useful as Artefact is no longer fixed.
+# It will differentiate between "Pottery Shard (Ceramic)" and "Flint Tool (Ceramic)".
+filtered_data$Group <- interaction(filtered_data$Artefact, filtered_data$Materials)
+
+
+# --- 4. Interactive 3D Scatter Plot Generation using Plotly ---
+
+plot_ly(
+  filtered_data, 
+  x = ~x, 
+  y = ~y, 
+  z = ~z, 
+  color = ~Group,    
+  type = "scatter3d",
+  mode = "markers",   
+  marker = list(size = 5) 
+) %>%
+  # Add layout details (title and axis labels)
+  layout(
+    title = "Interactive 3D Scatter Plot: Pottery Shard OR Flint Tool (Ceramic)", # Updated title
+    scene = list(
+      xaxis = list(title = "X"),
+      yaxis = list(title = "Y"),
+      zaxis = list(title = "Z")
+    )
+  )
